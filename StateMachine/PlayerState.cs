@@ -15,7 +15,8 @@ public class PlayerState : MonoBehaviour
 
     public virtual void Enter()
     {
-        Debug.Log("Entered " + animBoolName);
+        Debug.Log("In " + animBoolName);
+        player.anim.SetBool(animBoolName, true);
     }
 
     public virtual void Update()
@@ -25,6 +26,6 @@ public class PlayerState : MonoBehaviour
 
     public virtual void Exit()
     {
-        Debug.Log("Exited " + animBoolName);
+        player.anim.SetBool(animBoolName, false);
     }
 }

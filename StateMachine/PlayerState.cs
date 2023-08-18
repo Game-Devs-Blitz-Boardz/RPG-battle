@@ -18,7 +18,6 @@ public class PlayerState : MonoBehaviour
 
     public virtual void Enter()
     {
-        Debug.Log("In " + animBoolName);
         player.anim.SetBool(animBoolName, true);
         rb = player.rb;
     }
@@ -26,6 +25,8 @@ public class PlayerState : MonoBehaviour
     public virtual void Update()
     {
         xInput = Input.GetAxisRaw("Horizontal");
+
+        player.anim.SetFloat("yVelocity", rb.velocity.y);
     }
 
     public virtual void Exit()

@@ -11,6 +11,8 @@ public class Enemy : Entity
 
     [Header("Attack info")]
     public float attackDistance;
+    public float attackCooldown;
+    [HideInInspector] public float lastTimeAttacked;
 
     public EnemyStateMachine stateMachine { get; private set; }
 
@@ -25,6 +27,10 @@ public class Enemy : Entity
 
         stateMachine.currentState.Update();
 
+    }
+
+    public virtual void AnimFinishTrigger() {
+        stateMachine.currentState.AnimFinishTrigger();
     }
 
     public virtual RaycastHit2D IsPlayerDetected() {

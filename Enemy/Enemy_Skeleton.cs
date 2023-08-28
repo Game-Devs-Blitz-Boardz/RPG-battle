@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class Enemy_Skeleton : Enemy
 {
 
@@ -7,6 +9,7 @@ public class Enemy_Skeleton : Enemy
     public SkeletonMoveState moveState { get; private set; }
     public SkeletonBattleState battleState { get; private set; }
     public SkeletonAttackState attackState { get; private set; }
+    public SkeletonStunnedState stunnedState { get; private set; }
 
     #endregion
 
@@ -17,6 +20,7 @@ public class Enemy_Skeleton : Enemy
         moveState = new SkeletonMoveState(stateMachine, this, "Move", this);
         battleState = new SkeletonBattleState(stateMachine, this, "Move", this);
         attackState = new SkeletonAttackState(stateMachine, this, "Attack", this);
+        stunnedState = new SkeletonStunnedState(stateMachine, this, "Stunned", this);
     }
 
     protected override void Start() {
@@ -27,6 +31,10 @@ public class Enemy_Skeleton : Enemy
 
     protected override void Update() {
         base.Update();
+
+        if(Input.GetKeyDown(KeyCode.U)) {
+            stateMachine.ChangeState(stunnedState);
+        }
     }
 
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class Entity : MonoBehaviour
 {
@@ -9,7 +10,12 @@ public class Entity : MonoBehaviour
     public EntityFX fx { get; private set; }
     #endregion
 
-    [Header("Collisioin info")]
+    [Header("Knockback info")]
+    [SerializeField] protected Vector2 knockbackDirection;
+    [SerializeField] protected bool isKnocked;
+
+
+    [Header("Collision info")]
     public Transform attackCheck;
     public float attackCheckRadius;
     [SerializeField] protected Transform groundCheck;
@@ -37,15 +43,28 @@ public class Entity : MonoBehaviour
 
     public virtual void Damage() {
         fx.StartCoroutine("FlashFX");
+        StartCoroutine("HitKnockback");
+
         Debug.Log(gameObject.name + " was damaged");
+    }
+
+    protected virtual IEnumerator HitKnockback() {
+        isKnocked = true;
+        rb.velocity = new Vector2(knockbackDirection.x * -facingDir, knockbackDirection.y);
+
+        yield return new WaitForSeconds(0.07f);
+        isKnocked = false;
     }
 
     #region Velocity
     public void ZeroVelocity() {
+        if (isKnocked) return;
         rb.velocity = new Vector2(0, 0);
     }
 
     public void SetVelocity(float _xVelocity, float _yVelocity) {
+        if (isKnocked) return;
+
         rb.velocity = new Vector2(_xVelocity, _yVelocity);
         FlipController(_xVelocity);
     }

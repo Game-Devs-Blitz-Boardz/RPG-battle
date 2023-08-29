@@ -9,6 +9,11 @@ public class Sword_Skill : Skill
     [SerializeField] private Vector2 launchDir;
     [SerializeField] private float swordGravity;
 
-    
+    public void CreateSword() {
+        GameObject newSword = Instantiate(swordPrefab, player.transform.position, Quaternion.identity);
+        Sword_Skill_Controller newSwordScript = newSword.GetComponent<Sword_Skill_Controller>();
+
+        newSwordScript.SetupSword(launchDir, swordGravity);
+    }
 
 }

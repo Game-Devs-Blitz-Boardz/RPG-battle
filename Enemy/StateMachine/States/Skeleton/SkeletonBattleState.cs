@@ -59,7 +59,6 @@ public class SkeletonBattleState : EnemyState
             return true;
         }
 
-        Debug.Log("Attack is on cooldown");
         return false;
     }
 }

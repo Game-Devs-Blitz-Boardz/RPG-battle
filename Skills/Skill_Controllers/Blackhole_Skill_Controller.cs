@@ -7,31 +7,64 @@ public class Blackhole_Skill_Controller : MonoBehaviour
     [SerializeField] private GameObject hotKeyPrefab;
     [SerializeField] private List<KeyCode> keyCodeList;
 
-    public float maxSize;
-    public float growSpeed;
-    public float shrinkSpeed;
-    public bool canGrow;
-    public bool canShrink;
+    private float maxSize;
+    private float growSpeed;
+    private float shrinkSpeed;
 
+    private bool canGrow = true;
+    private bool canShrink;
     private bool canCreateHotKeys = true;
     private bool cloneAttackReleased;
-    public int amountOfAttacks = 4;
-    public float cloneAttackCooldown = .3f;
+
+    private int amountOfAttacks = 4;
+    private float cloneAttackCooldown = .3f;
     private float cloneAttackTimer;
 
     private List<Transform> targets = new List<Transform>();
     private List<GameObject> createdHotKey = new List<GameObject>();
+
+
+    public void SetupBlackHole(float _maxSize, float _growSpeed,float _shrinkSpeed, int _amountOfAttacks, float _cloneAttackCooldown) {
+
+        maxSize = _maxSize;
+        growSpeed = _growSpeed;
+        shrinkSpeed = _shrinkSpeed;
+        amountOfAttacks = _amountOfAttacks;
+        cloneAttackCooldown = _cloneAttackCooldown;
+
+    }
 
     private void Update() {
 
         cloneAttackTimer -= Time.deltaTime;
 
         if (Input.GetKey(KeyCode.R)) {
-            DestroyHotKeys();
-            cloneAttackReleased = true;
-            canCreateHotKeys = false;
+            ReleaseCloneAttack();
         }
 
+        CloneAttackLogic();
+
+        if (canGrow && !canShrink) {
+           transform.localScale = Vector2.Lerp(transform.localScale, new Vector2(maxSize, maxSize), growSpeed * Time.deltaTime);
+        }
+
+        if (canShrink) {
+            transform.localScale = Vector2.Lerp(transform.localScale, new Vector2(-1, -1), shrinkSpeed * Time.deltaTime);
+
+            if (transform.localScale.x < 0) {
+                Destroy(gameObject);
+            }
+        }
+
+    }
+
+    private void ReleaseCloneAttack() {
+        DestroyHotKeys();
+        cloneAttackReleased = true;
+        canCreateHotKeys = false;
+    }
+
+    private void CloneAttackLogic() {
         if (cloneAttackTimer < 0 && cloneAttackReleased) {
 
             cloneAttackTimer = cloneAttackCooldown;
@@ -53,20 +86,6 @@ public class Blackhole_Skill_Controller : MonoBehaviour
                 cloneAttackReleased = false;
             }
         }
-
-
-        if (canGrow && !canShrink) {
-           transform.localScale = Vector2.Lerp(transform.localScale, new Vector2(maxSize, maxSize), growSpeed * Time.deltaTime);
-        }
-
-        if (canShrink) {
-            transform.localScale = Vector2.Lerp(transform.localScale, new Vector2(-1, -1), shrinkSpeed * Time.deltaTime);
-
-            if (transform.localScale.x < 0) {
-                Destroy(gameObject);
-            }
-        }
-
     }
 
     private void DestroyHotKeys() {
@@ -85,6 +104,14 @@ public class Blackhole_Skill_Controller : MonoBehaviour
             CreateHotKey(other);
 
         }
+    }
+
+    private void OnTriggerExit2D(Collider2D other) {
+        
+        if (other.GetComponent<Enemy>() != null) {
+            other.GetComponent<Enemy>().FreezeTime(false);
+        }
+
     }
 
     private void CreateHotKey(Collider2D other) {

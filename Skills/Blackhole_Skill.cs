@@ -22,7 +22,7 @@ public class Blackhole_Skill : Skill
     {
         base.UseSkill();
 
-        GameObject newBlackhole = Instantiate(blackholePrefab);
+        GameObject newBlackhole = Instantiate(blackholePrefab, player.transform.position, Quaternion.identity);
 
         Blackhole_Skill_Controller newBlackholeScript = newBlackhole.GetComponent<Blackhole_Skill_Controller>();
 
@@ -30,11 +30,11 @@ public class Blackhole_Skill : Skill
     }
 
     protected override void Start() {
-        
+        base.Start();
     }
 
     protected override void Update() {
-        
+        base.Update();
     }
 
 }

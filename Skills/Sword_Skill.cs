@@ -29,7 +29,7 @@ public class Sword_Skill : Skill
         }   
 
         if (Input.GetKey(KeyCode.Mouse1)) {
-            DotsActive(true);
+            // DotsActive(true);
             for (int i = 0; i<dots.Length; i++) {
                 dots[i].transform.position = DotsPosition(i * spaceBetweenDots);
             }

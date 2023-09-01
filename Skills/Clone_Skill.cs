@@ -4,7 +4,6 @@ using System.Collections;
 public class Clone_Skill : Skill
 {
 
-    
     [Header("Clone info")]
     [SerializeField] private GameObject clonePrefab;
     [SerializeField] private float cloneDuration;
@@ -15,10 +14,15 @@ public class Clone_Skill : Skill
     [SerializeField] private bool createCloneOnDashOver;
     [SerializeField] private bool createCloneOnCounterAtack;
 
+    [Header("Clone can duplicate")]
+    [SerializeField] private bool canDuplicateClone;
+    [SerializeField] private float chanceToDuplicate = 35;
+
+
     public void CreateClone(Transform _clonePosition, Vector3 _offset) {
         GameObject newClone = Instantiate(clonePrefab);
 
-        newClone.GetComponent<Clone_Skill_Controller>().SetupClone(_clonePosition, cloneDuration, canAttack, _offset, FindClosestEnemy(newClone.transform));
+        newClone.GetComponent<Clone_Skill_Controller>().SetupClone(_clonePosition, cloneDuration, canAttack, _offset, FindClosestEnemy(newClone.transform), canDuplicateClone, chanceToDuplicate);
 
     }
 

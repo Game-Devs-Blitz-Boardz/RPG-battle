@@ -18,8 +18,17 @@ public class Clone_Skill : Skill
     [SerializeField] private bool canDuplicateClone;
     [SerializeField] private float chanceToDuplicate = 35;
 
+    [Header("Crystal instead of clone")]
+    public bool crystalInsteadOfClone;
+
 
     public void CreateClone(Transform _clonePosition, Vector3 _offset) {
+
+        if (crystalInsteadOfClone) {
+            SkillManager.instance.crystal.CreateCrystal();
+            return;
+        }
+
         GameObject newClone = Instantiate(clonePrefab);
 
         newClone.GetComponent<Clone_Skill_Controller>().SetupClone(_clonePosition, cloneDuration, canAttack, _offset, FindClosestEnemy(newClone.transform), canDuplicateClone, chanceToDuplicate);

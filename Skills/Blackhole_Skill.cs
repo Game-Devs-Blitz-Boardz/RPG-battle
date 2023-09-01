@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Blackhole_Skill : Skill
@@ -51,6 +49,10 @@ public class Blackhole_Skill : Skill
 
         return false;
         
+    }
+
+    public float GetBlackholeRadius() {
+        return maxSize / 2;
     }
 
 }

@@ -39,6 +39,7 @@ public class Player : Entity {
     public PlayerAimSwordState aimSword { get; private set; }
     public PlayerCatchSwordState catchSword { get; private set; }
     public PlayerBlackholeState blackhole { get; private set; }
+    public PlayerDeathState deathState { get; private set; }
     #endregion
 
     protected override void Awake() {
@@ -60,6 +61,7 @@ public class Player : Entity {
         aimSword = new PlayerAimSwordState(this, stateMachine, "AimSword");
         catchSword = new PlayerCatchSwordState(this, stateMachine, "CatchSword");
         blackhole = new PlayerBlackholeState(this, stateMachine, "Jump");
+        deathState = new PlayerDeathState(this, stateMachine, "Die");
     }
 
     protected override void Start() {
@@ -112,6 +114,13 @@ public class Player : Entity {
 
             stateMachine.ChangeState(dashState);
         }
+    }
+
+    public override void Die()
+    {
+        base.Die();
+
+        stateMachine.ChangeState(deathState);
     }
 
 }

@@ -17,6 +17,16 @@ public class CharacterStats : MonoBehaviour
     public Stat maxHealth;
     public Stat armour;
     public Stat evasion;
+    public Stat magicResistance;
+
+    [Header("Magic Stats")]
+    public Stat fireDamage;
+    public Stat iceDamage;
+    public Stat lightningDamage;
+
+    public bool isIgnited;
+    public bool isChilled;
+    public bool isShocked;
 
 
     [SerializeField] private int currentHealth;
@@ -39,7 +49,40 @@ public class CharacterStats : MonoBehaviour
         }
 
         totalDamage = CheckTargetArmour(_targetStats, totalDamage);
-        _targetStats.TakeDamage(totalDamage);
+
+        // _targetStats.TakeDamage(totalDamage);
+        DoMagicalDamage(_targetStats);
+    }
+
+    public virtual void DoMagicalDamage(CharacterStats _targetStats) {
+
+        int _fireDamage = fireDamage.GetValue();
+        int _iceDamage = iceDamage.GetValue();
+        int _lightningDamage = lightningDamage.GetValue();
+
+        int totalMagicaldamage = _fireDamage + _iceDamage + _lightningDamage + intelligence.GetValue();
+
+        totalMagicaldamage = CheckTargetResistance(_targetStats, totalMagicaldamage);
+        _targetStats.TakeDamage(totalMagicaldamage);
+
+    }
+
+    private static int CheckTargetResistance(CharacterStats _targetStats, int _totalMagicaldamage) {
+
+        _totalMagicaldamage -= _targetStats.magicResistance.GetValue() + (_targetStats.intelligence.GetValue() * 3);
+        _totalMagicaldamage = Mathf.Clamp(_totalMagicaldamage, 0, int.MaxValue);
+        return _totalMagicaldamage;
+
+    }
+
+    public virtual void ApplyAilments(bool _ignite, bool _chill, bool _shock) {
+
+        if (isIgnited || isChilled || isShocked) return;
+
+        isIgnited = _ignite;
+        isChilled = _chill;
+        isShocked = _shock;
+
     }
 
     public virtual void TakeDamage(int _damage) {
@@ -94,9 +137,6 @@ public class CharacterStats : MonoBehaviour
         return Mathf.RoundToInt(criticalDamage);
 
     }
-
-
-
     
 
 }

@@ -8,17 +8,23 @@ public class CharacterStats : MonoBehaviour
     public Stat intelligence; // 1 point increase magic damage by 1 and magic resistance by 3
     public Stat vitality; // 1 point increase health by 3 or 5 points
 
+    [Header("Offensive Stats")]
+    public Stat damage;
+    public Stat critChance;
+    public Stat critPower; //default value 150%
+
     [Header("Defensive Stats")]
     public Stat maxHealth;
     public Stat armour;
     public Stat evasion;
 
-    public Stat damage;
 
     [SerializeField] private int currentHealth;
 
 
     protected virtual void Start() {
+        critPower.SetDefaultValue(150);
+
         currentHealth = maxHealth.GetValue();
     }
 
@@ -27,6 +33,10 @@ public class CharacterStats : MonoBehaviour
         if(CanAvoidAttack(_targetStats)) return;
 
         int totalDamage = damage.GetValue() + strength.GetValue();
+
+        if (CanCrit()) {
+            totalDamage = CalucalateCriticalDamage(totalDamage);
+        }
 
         totalDamage = CheckTargetArmour(_targetStats, totalDamage);
         _targetStats.TakeDamage(totalDamage);
@@ -62,5 +72,31 @@ public class CharacterStats : MonoBehaviour
 
         return false;
     }
+
+    private bool CanCrit() {
+
+        int totalCriticalChance = critChance.GetValue() + agility.GetValue();
+
+        if (Random.Range(0, 100) <= totalCriticalChance) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    private int CalucalateCriticalDamage(int _damage) {
+
+        float totalCriticalPower = (critPower.GetValue() + strength.GetValue()) * 0.01f;
+
+        float criticalDamage = _damage * totalCriticalPower;
+
+        return Mathf.RoundToInt(criticalDamage);
+
+    }
+
+
+
+    
 
 }

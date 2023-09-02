@@ -24,9 +24,17 @@ public class CharacterStats : MonoBehaviour
     public Stat iceDamage;
     public Stat lightningDamage;
 
-    public bool isIgnited;
-    public bool isChilled;
-    public bool isShocked;
+    public bool isIgnited; // does damage over time
+    public bool isChilled; // decrease enemy armour by 20%
+    public bool isShocked; // miss 20% of attacks
+
+    private float ignitedTimer;
+    private float chilledTimer;
+    private float shockedTimer;
+
+    private float igniteDamageCooldown = .3f;
+    private float igniteDamageTimer;
+    private int igniteDamage;
 
 
     [SerializeField] private int currentHealth;
@@ -36,6 +44,40 @@ public class CharacterStats : MonoBehaviour
         critPower.SetDefaultValue(150);
 
         currentHealth = maxHealth.GetValue();
+    }
+
+    protected virtual void Update() {
+
+        ignitedTimer -= Time.deltaTime;
+        chilledTimer -= Time.deltaTime;
+        shockedTimer -= Time.deltaTime;
+
+        igniteDamageTimer -= Time.deltaTime;
+
+        if (ignitedTimer < 0) {
+            isIgnited = false;
+        }
+
+        if (chilledTimer < 0) {
+            isChilled = false;
+        }
+
+        if (shockedTimer < 0) {
+            isShocked= false;
+        }
+
+        if (igniteDamageTimer < 0 && isIgnited) {
+            Debug.Log("Ignite Damage: " + igniteDamage);
+
+            currentHealth -= igniteDamage;
+
+            if (currentHealth < 0) {
+                Die();
+            }
+            
+            igniteDamageTimer = igniteDamageCooldown;
+        }
+
     }
 
     public virtual void DoDamage(CharacterStats _targetStats) {
@@ -93,10 +135,11 @@ public class CharacterStats : MonoBehaviour
 
         }
 
+        if (canApplyIgnite) _targetStats.SetupIgniteDamage(Mathf.RoundToInt(_fireDamage * 0.2f));
+
         _targetStats.ApplyAilments(canApplyIgnite, canApplyChill, canApplyShock);
 
     }
-
 
     private static int CheckTargetResistance(CharacterStats _targetStats, int _totalMagicaldamage) {
 
@@ -110,10 +153,28 @@ public class CharacterStats : MonoBehaviour
 
         if (isIgnited || isChilled || isShocked) return;
 
-        isIgnited = _ignite;
+        if (_ignite) {
+            isIgnited = _ignite;
+            ignitedTimer = 2f;
+        }
+
+        if (_chill) {
+            isChilled = _chill;
+            chilledTimer = 2f;
+        }
+
+        if (_shock) {
+            isShocked = _shock;
+            shockedTimer = 2f;
+        }
+
         isChilled = _chill;
         isShocked = _shock;
 
+    }
+
+    public void SetupIgniteDamage(int _damage) {
+        igniteDamage = _damage;
     }
 
     public virtual void TakeDamage(int _damage) {
@@ -131,13 +192,21 @@ public class CharacterStats : MonoBehaviour
     }
 
     private int CheckTargetArmour(CharacterStats _targetStats, int _totalDamage) {
-        _totalDamage -= _targetStats.armour.GetValue();
+
+        if (_targetStats.isChilled) {
+            _totalDamage -= Mathf.RoundToInt(_targetStats.armour.GetValue() * 0.8f);
+        } else {
+            _totalDamage -= _targetStats.armour.GetValue();
+        }
+
         _totalDamage = Mathf.Clamp(_totalDamage, 0, int.MaxValue);
         return _totalDamage;
     }
 
     private bool CanAvoidAttack(CharacterStats _targetStats) {
         int totalEvasion = _targetStats.evasion.GetValue() + _targetStats.agility.GetValue();
+
+        if (isShocked) totalEvasion += 20;
 
         if (Random.Range(0, 100) < totalEvasion) {
             Debug.Log("attack avoided");

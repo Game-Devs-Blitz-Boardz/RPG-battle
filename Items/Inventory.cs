@@ -174,7 +174,7 @@ public class Inventory : MonoBehaviour
 
         if (stashDictionary.TryGetValue(_item, out InventoryItem stashValue)) {
             if (stashValue.stackSize <= 1) {
-                stash.Remove(value);
+                stash.Remove(stashValue);
                 stashDictionary.Remove(_item);
             } else {
                 stashValue.RemoveStack();

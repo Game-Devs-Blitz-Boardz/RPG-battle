@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public enum EquipmentType {
     Weapon,
@@ -34,6 +35,9 @@ public class ItemData_Equipment : ItemData
     public int fireDamage;
     public int iceDamage;
     public int lightningDamage;
+
+    [Header("Craft requirements")]
+    public List<InventoryItem> craftingMaterials;
 
 
     public void AddModifiers() {

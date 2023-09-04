@@ -5,13 +5,13 @@ using UnityEngine;
 public class ItemObject : MonoBehaviour
 {
 
-    private SpriteRenderer sr;
     [SerializeField] private ItemData itemData;
 
-    private void Start() {
-        sr = GetComponent<SpriteRenderer>();
-        sr.sprite = itemData.icon;
+    private void OnValidate() {
+        GetComponent<SpriteRenderer>().sprite = itemData.icon;
+        gameObject.name = "Item object - " + itemData.itemName;
     }
+
     private void OnTriggerEnter2D(Collider2D other) {
         if (other.GetComponent<Player>() != null) {
             Inventory.instance.AddItem(itemData);

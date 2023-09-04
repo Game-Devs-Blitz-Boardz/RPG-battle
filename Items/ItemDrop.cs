@@ -9,10 +9,9 @@ public class ItemDrop : MonoBehaviour
     private List<ItemData> dropList = new List<ItemData>();
     
     [SerializeField] private GameObject dropPrefab;
-    [SerializeField] private ItemData item;
 
 
-    public void GenerateDrop() {
+    public virtual void GenerateDrop() {
         for (int i = 0; i < possibleDrop.Length; i++) {
 
             if (Random.Range(0, 100) <= possibleDrop[i].dropChance) {
@@ -29,7 +28,7 @@ public class ItemDrop : MonoBehaviour
 
     }
 
-    public void DropItem(ItemData _itemData) {
+    protected void DropItem(ItemData _itemData) {
 
         GameObject newDrop = Instantiate(dropPrefab, transform.position, Quaternion.identity);
 

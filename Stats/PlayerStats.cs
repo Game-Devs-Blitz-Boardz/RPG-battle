@@ -24,4 +24,16 @@ public class PlayerStats : CharacterStats
         GetComponent<PlayerItemDrop>()?.GenerateDrop();
     }
 
+    protected override void DecreaseHealthBy(int _damage)
+    {
+        base.DecreaseHealthBy(_damage);
+
+        ItemData_Equipment currentArmour = Inventory.instance.GetEquipment(EquipmentType.Armour);
+
+        if (currentArmour != null) {
+            currentArmour.Effect(player.transform);
+        }
+
+    }
+
 }

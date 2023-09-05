@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class CharacterStats : MonoBehaviour
 {
@@ -79,6 +80,22 @@ public class CharacterStats : MonoBehaviour
 
     }
 
+    public virtual void IncreaseStatBy(int _modifier, float _duration, Stat _statToModify) {
+
+        StartCoroutine(StartModCoroutine(_modifier, _duration, _statToModify));
+
+    }
+
+    private IEnumerator StartModCoroutine(int _modifier, float _duration, Stat _statToModify) {
+
+        _statToModify.AddModifier(_modifier);
+
+        yield return new WaitForSeconds(_duration);
+
+        _statToModify.RemoveModifier(_modifier);
+
+    }
+
     public virtual void DoDamage(CharacterStats _targetStats) {
 
         if(CanAvoidAttack(_targetStats)) return;
@@ -90,9 +107,9 @@ public class CharacterStats : MonoBehaviour
         }
 
         totalDamage = CheckTargetArmour(_targetStats, totalDamage);
-
         _targetStats.TakeDamage(totalDamage);
-        // DoMagicalDamage(_targetStats);
+
+        DoMagicalDamage(_targetStats); // remove if you down want to apply magic hit on primary attack
     }
 
 #region Magical Damage and ailements

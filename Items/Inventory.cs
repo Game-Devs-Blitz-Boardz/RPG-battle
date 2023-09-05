@@ -150,7 +150,7 @@ public class Inventory : MonoBehaviour
 
     public void AddItem(ItemData _item) {
 
-        if (_item.itemType == ItemType.Equipment) {
+        if (_item.itemType == ItemType.Equipment && CanAddItem()) {
             AddToInventory(_item);
         } else if (_item.itemType == ItemType.Material) {
             AddToStash(_item);
@@ -207,6 +207,17 @@ public class Inventory : MonoBehaviour
         }
 
         UpdateSlotUI();
+
+    }
+
+    public bool CanAddItem() {
+
+        if (inventory.Count >= inventoryItemSlot.Length) {
+            Debug.Log("Inventory is full");
+            return false;
+        }
+
+        return true;
 
     }
 

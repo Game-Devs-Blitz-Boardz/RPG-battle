@@ -26,6 +26,10 @@ public class Inventory : MonoBehaviour
     private UI_ItemSlot[] stashItemSlot;
     private UI_EquipmentSlot[] equipmentSlot;
 
+    [Header("Items cooldown")]
+    private float lastTimeUsedFlask;
+
+
     private void Awake() {
         if (instance == null) 
             instance = this;
@@ -247,6 +251,24 @@ public class Inventory : MonoBehaviour
         }
 
         return equipedItem;
+
+    }
+
+    public void UseFlask() {
+
+        ItemData_Equipment currentFlask = GetEquipment(EquipmentType.Flask);
+
+        if (currentFlask == null) return;
+
+        bool canUseFlask = Time.time > lastTimeUsedFlask + currentFlask.itemCooldown;
+
+        if (canUseFlask) {
+            currentFlask.Effect(null);
+            Debug.Log("flask used");
+            lastTimeUsedFlask = Time.time;
+        } else {
+            Debug.Log("flask on cooldown");
+        }
 
     }
 

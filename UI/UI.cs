@@ -9,6 +9,7 @@ public class UI : MonoBehaviour
     [SerializeField] private GameObject characterUI;
 
     public UI_ItemToolTip itemToolTip;
+    public UI_Stat_ToolTip statToolTip;
     
     public void SwitchTo(GameObject _menu) {
 

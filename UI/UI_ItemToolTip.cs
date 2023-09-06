@@ -10,17 +10,30 @@ public class UI_ItemToolTip : MonoBehaviour
     [SerializeField] private TextMeshProUGUI itemTypeText;
     [SerializeField] private TextMeshProUGUI itemDescription;
 
-    public void ShowToolTip(ItemData_Equipment _item){
+    [SerializeField] private int defaultFontSize = 32;
 
+    public void ShowToolTip(ItemData_Equipment _item) {
+
+        if (_item == null) return;
         
         itemNameText.text = _item.itemName;
         itemTypeText.text = _item.equipmentType.ToString();
+        itemDescription.text = _item.GetDescription();
+
+        if (itemNameText.text.Length > 12) {
+
+            itemNameText.fontSize = itemNameText.fontSize * .7f;
+
+        } else {
+            itemNameText.fontSize = defaultFontSize;
+        }
 
         gameObject.SetActive(true);
 
     }
 
     public void HideToolTip() {
+        itemNameText.fontSize = defaultFontSize;
         gameObject.SetActive(false);
     }
 

@@ -18,7 +18,7 @@ public class PlayerGroundedState : PlayerState
     public override void Update() {
         base.Update();
 
-        if (Input.GetKeyDown(KeyCode.R)) {
+        if (Input.GetKeyDown(KeyCode.R) && player.skill.blackhole.blackholeUnlocked) {
             stateMachine.ChangeState(player.blackhole);
         }
 

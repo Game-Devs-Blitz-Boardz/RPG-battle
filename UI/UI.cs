@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class UI : MonoBehaviour
 {
@@ -15,6 +12,10 @@ public class UI : MonoBehaviour
     public UI_Stat_ToolTip statToolTip;
     public UI_SkillToolTip skillToolTip;
     public UI_CraftWindow craftWindow;
+
+    private void Awake() {
+        SwitchTo(skillTreeUI); // we need this to asign events on skill tree slots before we asign events on skill slots
+    }
 
     private void Start() {
         SwitchTo(null);

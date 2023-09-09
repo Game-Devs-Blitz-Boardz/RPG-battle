@@ -339,13 +339,17 @@ public class CharacterStats : MonoBehaviour
 
     }
 
+    public virtual void OnEvasion() {
+
+    }
+
     private bool CanAvoidAttack(CharacterStats _targetStats) {
         int totalEvasion = _targetStats.evasion.GetValue() + _targetStats.agility.GetValue();
 
         if (isShocked) totalEvasion += 20;
 
         if (Random.Range(0, 100) < totalEvasion) {
-            Debug.Log("attack avoided");
+            _targetStats.OnEvasion();
             return true;
         }
 

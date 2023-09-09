@@ -133,11 +133,6 @@ public class Inventory : MonoBehaviour
             stashItemSlot[i].CleanupSlot();
         }
 
-        for (int i = 0; i < statSlot.Length; i++) {
-            statSlot[i].UpdateStatValueUI();
-        }
-
-
 
         for (int i = 0; i<inventory.Count; i++) {
             inventoryItemSlot[i].UpdateSlot(inventory[i]);
@@ -147,6 +142,14 @@ public class Inventory : MonoBehaviour
             stashItemSlot[i].UpdateSlot(stash[i]);
         }
 
+        UpdateStatsUI();
+
+    }
+
+    public void UpdateStatsUI() {
+        for (int i = 0; i < statSlot.Length; i++) {
+            statSlot[i].UpdateStatValueUI();
+        }
     }
 
     public void AddItem(ItemData _item) {

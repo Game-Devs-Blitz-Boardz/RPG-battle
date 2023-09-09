@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class PlayerStats : CharacterStats
 {
 
@@ -34,6 +36,11 @@ public class PlayerStats : CharacterStats
             currentArmour.Effect(player.transform);
         }
 
+    }
+
+    public override void OnEvasion()
+    {
+        player.skill.dodge.CreateMirageOnDodge();
     }
 
 }

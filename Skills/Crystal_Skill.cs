@@ -25,7 +25,7 @@ public class Crystal_Skill : Skill
     [SerializeField] private float useTimeWindow;
     [SerializeField] private List<GameObject> crystalLeft = new List<GameObject>();
 
-    protected override void UseSkill()
+    public override void UseSkill()
     {
         base.UseSkill();
 

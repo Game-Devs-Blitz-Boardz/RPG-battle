@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class UI_ItemToolTip : MonoBehaviour
+public class UI_ItemToolTip : UI_ToolTip
 {
     
     [SerializeField] private TextMeshProUGUI itemNameText;
@@ -20,13 +20,8 @@ public class UI_ItemToolTip : MonoBehaviour
         itemTypeText.text = _item.equipmentType.ToString();
         itemDescription.text = _item.GetDescription();
 
-        if (itemNameText.text.Length > 12) {
-
-            itemNameText.fontSize = itemNameText.fontSize * .7f;
-
-        } else {
-            itemNameText.fontSize = defaultFontSize;
-        }
+        AdjustPosition();
+        AdjustFontSize(itemNameText);
 
         gameObject.SetActive(true);
 

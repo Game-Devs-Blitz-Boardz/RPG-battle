@@ -38,6 +38,7 @@ public class Inventory : MonoBehaviour, ISaveManager
 
     [Header("Data Base")]
     public List<InventoryItem> loadedItems;
+    public List<ItemData_Equipment> loadedEquipment;
 
 
     private void Awake() {
@@ -67,6 +68,10 @@ public class Inventory : MonoBehaviour, ISaveManager
     }
 
     private void AddStartingItems() {
+
+        foreach (ItemData_Equipment item in loadedEquipment) {
+            EquipItem(item);
+        }
 
         if (loadedItems.Count > 0) {
 
@@ -347,7 +352,20 @@ public class Inventory : MonoBehaviour, ISaveManager
 
                     loadedItems.Add(itemToLoad);
                 }
+            }
+        }
 
+        foreach (string loadedItemId in _data.equipmentId)
+        {
+
+            foreach (var item in GetItemDataBase())
+            {
+
+                if (item != null && item.itemId == loadedItemId)
+                {
+
+                    loadedEquipment.Add(item as ItemData_Equipment);
+                }
             }
         }
 
@@ -357,18 +375,30 @@ public class Inventory : MonoBehaviour, ISaveManager
     {
 
         _data.inventory.Clear();
+        _data.equipmentId.Clear();
 
         foreach (KeyValuePair<ItemData, InventoryItem> pair in inventoryDictionary)
         {
             _data.inventory.Add(pair.Key.itemId, pair.Value.stackSize);
         }
 
+        foreach (KeyValuePair<ItemData, InventoryItem> pair in stashDictionary)
+        {
+            _data.inventory.Add(pair.Key.itemId, pair.Value.stackSize);
+        }
+
+        foreach (KeyValuePair<ItemData_Equipment, InventoryItem> pair in equipmentDictionary)
+        {
+            _data.equipmentId.Add(pair.Key.itemId);
+        }
+
     }
+
     private List<ItemData> GetItemDataBase() {
 
 
         List<ItemData> itemDatabase = new List<ItemData>();
-        string[] assetNames = AssetDatabase.FindAssets("", new[] {"Assets/SO/Equipment"});
+        string[] assetNames = AssetDatabase.FindAssets("", new[] {"Assets/SO/Items"});
 
         foreach (string SOName in assetNames) {
             var SOpath = AssetDatabase.GUIDToAssetPath(SOName);

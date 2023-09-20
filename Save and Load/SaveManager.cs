@@ -13,6 +13,12 @@ public class SaveManager : MonoBehaviour
     private List<ISaveManager> saveManagers;
     private FileDataHandler dataHandler;
 
+    [ContextMenu("Delete saved data")] // This is a button that appears in the inspector
+    private void DeleteSavedData() {
+        dataHandler = new FileDataHandler(Application.persistentDataPath, fileName);
+        dataHandler.Delete();
+    }
+
     private void Awake() {
         if (instance != null) {
             Destroy(this.gameObject);

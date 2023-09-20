@@ -20,6 +20,8 @@ public class PlayerDeathState : PlayerState
     {
         base.Enter();
 
+        GameObject.Find("Canvas").GetComponent<UI>().SwitchOnEndScreen();
+
     }
 
     public override void Exit()

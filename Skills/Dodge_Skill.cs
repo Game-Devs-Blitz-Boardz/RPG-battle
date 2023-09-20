@@ -22,6 +22,12 @@ public class Dodge_Skill : Skill
 
     }
 
+    protected override void CheckUnlock()
+    {
+        UnlockDodge();
+        UnlockMirageDodge();
+    }
+
     public override void UseSkill()
     {
         base.UseSkill();

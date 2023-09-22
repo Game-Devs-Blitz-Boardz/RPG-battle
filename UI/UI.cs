@@ -28,6 +28,7 @@ public class UI : MonoBehaviour
 
     private void Start() {
         SwitchTo(inGameUI);
+        fadeScreen.gameObject.SetActive(true);
 
         itemToolTip.gameObject.SetActive(false);
         statToolTip.gameObject.SetActive(false);
@@ -92,7 +93,6 @@ public class UI : MonoBehaviour
     }
 
     public void SwitchOnEndScreen() {
-
         fadeScreen.FadeOut();
         StartCoroutine(EndScreenCoroutine());
     }

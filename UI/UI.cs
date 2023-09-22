@@ -85,7 +85,7 @@ public class UI : MonoBehaviour
         for (int i = 0; i < transform.childCount; i++)
         {
 
-            if (transform.GetChild(i).gameObject.activeSelf) return;
+            if (transform.GetChild(i).gameObject.activeSelf && transform.GetChild(i).GetComponent<UI_FadeScreen>() == null) return;
         }
 
         SwitchTo(inGameUI);

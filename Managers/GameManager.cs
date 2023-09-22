@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,8 +7,17 @@ public class GameManager : MonoBehaviour, ISaveManager
 {
 
     public static GameManager instance;
+
+    private Transform player;
+
     [SerializeField] private Checkpoint[] checkpoints;
     [SerializeField] private string closestCheckpointId;
+
+    [Header("Lost currency")]
+    [SerializeField] private GameObject lostCurrencyPrefab;
+    public int lostCurrencyAmount;
+    [SerializeField] private float lostCurrencyX;
+    [SerializeField] private float lostCurrencyY;
 
     private void Awake() {
         if (instance != null) {
@@ -19,6 +29,10 @@ public class GameManager : MonoBehaviour, ISaveManager
         checkpoints = FindObjectsOfType<Checkpoint>();
     }
 
+    private void Start() {
+        player = PlayerManager.instance.player.transform;
+    }
+
     public void RestartScene() {
         SaveManager.instance.SaveGame();
         Scene scene = SceneManager.GetActiveScene();
@@ -27,7 +41,45 @@ public class GameManager : MonoBehaviour, ISaveManager
 
     public void LoadData(GameData _data)
     {
+        
+        // closestCheckpointId = _data.closestCheckpointId;
 
+        StartCoroutine(LoadWIthDelay(_data));
+
+        Debug.Log("Game manager loaded");
+
+    }
+
+
+    public void SaveData(ref GameData _data)
+    {
+
+        _data.lostCurrencyAmount = lostCurrencyAmount;
+        _data.lostCurrencyX = player.position.x;
+        _data.lostCurrencyY = player.position.y;
+
+        if (FindClosestCheckpoint() != null)
+            _data.closestCheckpointId = FindClosestCheckpoint().id;
+
+        _data.checkpoints.Clear();
+
+        foreach (Checkpoint checkpoint in checkpoints)
+        {
+            _data.checkpoints.Add(checkpoint.id, checkpoint.activationStatus);
+        }
+    }
+
+
+    private IEnumerator LoadWIthDelay(GameData _data) {
+        yield return new WaitForSeconds(0.1f);
+
+        LoadCheckpoints(_data);
+        LoadClosestCheckpoint(_data);
+        LoadLostCurrency(_data);
+
+    }
+
+    private void LoadCheckpoints(GameData _data) {
         foreach (KeyValuePair<string, bool> pair in _data.checkpoints)
         {
             foreach (Checkpoint checkpoint in checkpoints)
@@ -37,48 +89,36 @@ public class GameManager : MonoBehaviour, ISaveManager
 
                     checkpoint.ActivateCheckpoint();
                 }
-            }
+            }    
+        }    
+    }
+
+    private void LoadLostCurrency(GameData _data) {
+        lostCurrencyAmount = _data.lostCurrencyAmount;
+        lostCurrencyX = _data.lostCurrencyX;
+        lostCurrencyY = _data.lostCurrencyY;
+
+        if (lostCurrencyAmount > 0) {
+            GameObject newLostCurrency = Instantiate(lostCurrencyPrefab, new Vector3(lostCurrencyX, lostCurrencyY), Quaternion.identity);
+            newLostCurrency.GetComponent<LostCurrency_Controller>().currency = lostCurrencyAmount;
         }
 
-        closestCheckpointId = _data.closestCheckpointId;
-
-        // foreach (Checkpoint checkpoint in checkpoints)
-        // {
-        //     if (_data.closestCheckpointId == checkpoint.id)
-        //     {
-        //         PlayerManager.instance.player.transform.position = checkpoint.transform.position;
-        //     }
-        // }
-
-        // Invoke(PlacePlayerAtClosestCheckpoint(_data), 0.1f);       
-        PlacePlayerAtClosestCheckpoint(_data);
-
-        Debug.Log("Game manager loaded");
+        lostCurrencyAmount = 0;
 
     }
 
-    public void PlacePlayerAtClosestCheckpoint(GameData _data) {
+    public void LoadClosestCheckpoint(GameData _data) {
+
+        closestCheckpointId = _data.closestCheckpointId;
 
         foreach (Checkpoint checkpoint in checkpoints)
         {
             if (_data.closestCheckpointId == checkpoint.id)
             {
-                PlayerManager.instance.player.transform.position = checkpoint.transform.position;
+                player.position = checkpoint.transform.position;
             }
         }
 
-    }
-
-    public void SaveData(ref GameData _data)
-    {
-
-        _data.closestCheckpointId = FindClosestCheckpoint().id;
-        _data.checkpoints.Clear();
-
-        foreach (Checkpoint checkpoint in checkpoints)
-        {
-            _data.checkpoints.Add(checkpoint.id, checkpoint.activationStatus);
-        }
     }
 
     private Checkpoint FindClosestCheckpoint() {
@@ -88,7 +128,7 @@ public class GameManager : MonoBehaviour, ISaveManager
 
         foreach (Checkpoint checkpoint in checkpoints)
         {
-            float distanceToCheckpoint = Vector2.Distance(PlayerManager.instance.player.transform.position, checkpoint.transform.position);
+            float distanceToCheckpoint = Vector2.Distance(player.position, checkpoint.transform.position);
 
             if (distanceToCheckpoint < closestDistance && checkpoint.activationStatus == true) {
                 closestDistance = distanceToCheckpoint;
@@ -98,4 +138,5 @@ public class GameManager : MonoBehaviour, ISaveManager
 
         return closestCheckpoint;
     }
+
 }

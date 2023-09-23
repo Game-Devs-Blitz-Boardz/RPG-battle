@@ -1,8 +1,9 @@
 using UnityEngine;
 using System.Collections;
 using TMPro;
+using System.Collections.Generic;
 
-public class UI : MonoBehaviour
+public class UI : MonoBehaviour, ISaveManager
 {
 
     [Header("End Screen")]
@@ -21,6 +22,8 @@ public class UI : MonoBehaviour
     public UI_Stat_ToolTip statToolTip;
     public UI_SkillToolTip skillToolTip;
     public UI_CraftWindow craftWindow;
+
+    [SerializeField] private UI_VolumeSlider[] volumeSettings;
 
     private void Awake() {
         SwitchTo(skillTreeUI); // we need this to asign events on skill tree slots before we asign events on skill slots
@@ -106,6 +109,40 @@ public class UI : MonoBehaviour
 
     public void RestartGamebutton() {
         GameManager.instance.RestartScene();
+    }
+
+    public void LoadData(GameData _data)
+    {
+
+        foreach (KeyValuePair<string, float> pair in _data.volumeSettings)
+        {
+
+            foreach (UI_VolumeSlider item in volumeSettings)
+            {
+
+                if (item.parameter == pair.Key)
+                {
+                    item.LoadSlider(pair.Value);
+                }
+
+            }
+            
+        }
+
+    }
+
+    public void SaveData(ref GameData _data)
+    {
+
+        _data.volumeSettings.Clear();
+
+        foreach (UI_VolumeSlider item in volumeSettings)
+        {
+
+            _data.volumeSettings.Add(item.parameter, item.slider.value);
+            
+        }
+
     }
 
 }
